@@ -29,18 +29,21 @@ app.get('/', (req, res) => {
     res.render('index');
 })
 
-// テスト用データ作成ルーティング
-app.get('/makecafeinfo', async (req, res) => {
-    const cafe = new CafeInfo({
-        shopName: "スターバックス",
-        priceOfcoffee: 300,
-        hasWiFi: true,
-        wifiStrength: 60,
-        comfort: 6,
-        comment: "普通のスタバ",
-    });
-    await cafe.save();
-    res.send(cafe);
+// 一覧ページ
+app.get('/cafe/index', async (req, res) => {
+    // カフェの一覧を全件選択
+    const cafes = await CafeInfo.find({});
+    res.render('cafes/cafeindex', { cafes });
+})
+
+// 詳細ページ
+app.get('/cafe/:id/detail', async (req, res) => {
+    // リクエストからidを取得
+    const { id } = req.params;
+    // クリックしたカフェのIDを元にデータを検索
+    const cafe = await CafeInfo.findById(id).exec();
+    // 詳細ページに遷移
+    res.render('cafes/cafedetail', { cafe });
 })
 
 app.listen(3000, () => {
