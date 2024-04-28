@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= cafe.shopName %>の詳細
+    </title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* 追加のスタイル */
+        body {
+            padding-top: 3rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1 class="text-center mb-4">
+            <%= cafe.shopName %>の詳細
+        </h1>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">基本情報</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">カフェの名前: <%= cafe.shopName %>
+                    </li>
+                    <li class="list-group-item">コーヒー一杯の価格: <%= cafe.priceOfcoffee %> 円</li>
+                    <li class="list-group-item">住所: <%= cafe.location %>
+                    </li>
+                    <li class="list-group-item">WiFiの有無: <%= cafe.hasWiFi ? 'あり' : 'なし' %>
+                    </li>
+                    <li class="list-group-item">WiFiの強度: <%= cafe.wifiStrength %>
+                    </li>
+                    <li class="list-group-item">快適さ: <%= cafe.comfort %>
+                    </li>
+                    <li class="list-group-item">コメント: <%= cafe.comment %>
+                    </li>
+                    <li class="list-group-item">登録日: <%= cafe.registerDate %>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

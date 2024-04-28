@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カフェ一覧画面</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* 追加のスタイル */
+        body {
+            padding-top: 3rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">カフェ一覧</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>店名</th>
+                    <th>住所</th>
+                    <th>WiFiの有無</th>
+                    <th>登録日</th>
+                    <th> </th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (let cafe of cafes) { %>
+                    <tr>
+
+                        <td>
+                            <%= cafe.shopName %>
+                        </td>
+                        <td>
+                            <%= cafe.location %>
+                        </td>
+                        <td>
+                            <% if (cafe.hasWiFi){ %>
+                                有
+                                <% } else { %>
+                                    無
+                                    <% } %>
+                        </td>
+                        <td>
+                            <%= cafe.registerDate %>
+                        </td>
+                        <td>
+                            <!-- 詳細ボタン -->
+                            <button class="btn btn-secondary"
+                                onclick="location.href = '/cafe/<%= cafe.id %>/detail'">詳細</button>
+                        </td>
+
+
+
+                    </tr>
+                    <% }%>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bootstrap JS (optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

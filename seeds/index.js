@@ -42,6 +42,11 @@ const seedCafes = async () => {
         // テストデータ生成
         const testData = [];
 
+        // 日付データを作成
+        const testDate = new Date();
+        const testDateText = `${testDate.getFullYear()}年${testDate.getMonth() + 1}月${testDate.getDate()}日`;
+
+
         // 生成したデータの数だけループしてデータを生成する
         for (let i = 0; i <= numberOfCafes; i++) {
             testData.push({
@@ -52,7 +57,7 @@ const seedCafes = async () => {
                 wifiStrength: Math.floor(Math.random() * 100), // WiFiの強度を0〜100のランダムな値で設定
                 comfort: Math.floor(Math.random() * 11), // 快適さを0〜10のランダムな値で設定
                 comment: 'テストコメント',
-                registerDate: new Date()
+                registerDate: testDateText
             });
 
         }

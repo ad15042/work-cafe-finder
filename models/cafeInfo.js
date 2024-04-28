@@ -47,8 +47,7 @@ const CafeInfoSchema = new mongoose.Schema({
         type: String,
     },
     registerDate: {
-        type: Date,
-        default: Date.now
+        type: String,
 
     }
 })
