@@ -34,9 +34,22 @@
                     </li>
                     <li class="list-group-item">WiFiの有無: <%= cafe.hasWiFi ? 'あり' : 'なし' %>
                     </li>
-                    <li class="list-group-item">WiFiの強度: <%= cafe.wifiStrength %>
+                    <li class="list-group-item">
+                        WiFiの強度:
+                        <span id="wifiStrengthValue">
+                            <%= cafe.wifiStrength %>
+                        </span>
+                        <input type="range" class="form-control-range" id="wifiStrength" min="0" max="100"
+                            value="<%= cafe.wifiStrength %>" disabled>
                     </li>
-                    <li class="list-group-item">快適さ: <%= cafe.comfort %>
+                    <li class="list-group-item">
+                        快適さ:
+                        <span id="comfortValue">
+                            <%= cafe.comfort %>
+                        </span>
+                        <input type="range" class="form-control-range" id="comfort" min="1" max="10"
+                            value="<%= cafe.comfort %>" disabled>
+
                     </li>
                     <li class="list-group-item">コメント: <%= cafe.comment %>
                     </li>
