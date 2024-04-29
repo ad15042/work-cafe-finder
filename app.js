@@ -19,6 +19,8 @@ async function main() {
     // await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test
 }
 
+// formデータをパースする
+app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 // ejsのディレクトリの設定
 app.set('views', path.join(__dirname, 'views'));
 // ejsをview エンジンに設定
@@ -44,6 +46,35 @@ app.get('/cafe/:id/detail', async (req, res) => {
     const cafe = await CafeInfo.findById(id).exec();
     // 詳細ページに遷移
     res.render('cafes/cafedetail', { cafe });
+})
+
+// 登録ページへ遷移
+app.get('/cafe/register', async (req, res) => {
+    res.render('cafes/caferegister');
+})
+
+// 新規登録処理のルーティング
+app.post('/cafe/register', async (req, res) => {
+    // 登録日用日付データを作成
+    const date = new Date();
+    // データ型をString型に変換
+    const dateText = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+    // リクエストボディに含まれるデータを取得
+    const { shopName, priceOfcoffee, location, hasWiFi, wifiStrength, comfort, comment } = req.body;
+    // 新規データを登録する
+    const createdCafe = await CafeInfo.create({
+        shopName: shopName,
+        priceOfcoffee: priceOfcoffee,
+        location: location,
+        hasWiFi: hasWiFi,
+        wifiStrength: wifiStrength,
+        comfort: comfort,
+        comment: comment,
+        registerDate: dateText
+    });
+    console.log(`${createdCafe.shopName}を登録しました。`)
+    // 一覧画面にリダイレクト
+    res.redirect("/cafe/index");
 })
 
 app.listen(3000, () => {
