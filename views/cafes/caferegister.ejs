@@ -24,41 +24,45 @@
                 <form action="/cafe/register" method="POST">
                     <div class="form-group">
                         <label for="shopName">カフェの名前</label>
-                        <input type="text" class="form-control" id="shopName" name="shopName"
+                        <input type="text" class="form-control" id="shopName" name="cafe[shopName]"
                             placeholder="カフェの名前を入力してください">
                     </div>
                     <div class="form-group">
                         <label for="priceOfcoffee">コーヒー一杯の価格</label>
-                        <input type="number" class="form-control" id="priceOfcoffee" name="priceOfcoffee"
+                        <input type="number" class="form-control" id="priceOfcoffee" name="cafe[priceOfcoffee]"
                             placeholder="コーヒー一杯の価格を入力してください">
                     </div>
                     <div class="form-group">
                         <label for="location">住所</label>
-                        <input type="text" class="form-control" id="location" name="location" placeholder="住所を入力してください">
+                        <input type="text" class="form-control" id="location" name="cafe[location]"
+                            placeholder="住所を入力してください">
                     </div>
                     <div class="form-group">
                         <label for="hasWiFi">WiFiの有無</label>
-                        <select class="form-control" id="hasWiFi" name="hasWiFi">
+                        <select class="form-control" id="hasWiFi" name="cafe[hasWiFi]">
                             <option value="true">あり</option>
                             <option value="false">なし</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="wifiStrength">WiFiの強度</label>
-                        <input type="range" class="form-control-range" id="wifiStrength" name="wifiStrength" min="1"
-                            max="100">
+                        <input type="range" class="form-control-range" id="wifiStrength" name="cafe[wifiStrength]"
+                            min="1" max="100">
                     </div>
                     <div class="form-group">
                         <label for="comfort">快適さ</label>
-                        <input type="range" class="form-control-range" id="comfort" name="comfort" min="1" max="10">
+                        <input type="range" class="form-control-range" id="comfort" name="cafe[comfort]" min="1"
+                            max="10">
                     </div>
                     <div class="form-group">
                         <label for="comment">コメント</label>
-                        <textarea class="form-control" id="comment" name="comment" rows="3"
+                        <textarea class="form-control" id="comment" name="cafe[comment]" rows="3"
                             placeholder="コメントを入力してください"></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">登録する</button>
                 </form>
+                <button type="button" class="btn btn-secondary" onclick="location.href='/cafe/index'">戻る</button>
+
             </div>
         </div>
     </div>

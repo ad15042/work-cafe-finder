@@ -33,6 +33,7 @@ app.get('/', (req, res) => {
 
 // 一覧ページ
 app.get('/cafe/index', async (req, res) => {
+    console.log('処理ここまで来ている')
     // カフェの一覧を全件選択
     const cafes = await CafeInfo.find({});
     res.render('cafes/cafeindex', { cafes });
@@ -59,20 +60,14 @@ app.post('/cafe/register', async (req, res) => {
     const date = new Date();
     // データ型をString型に変換
     const dateText = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
-    // リクエストボディに含まれるデータを取得
-    const { shopName, priceOfcoffee, location, hasWiFi, wifiStrength, comfort, comment } = req.body;
-    // 新規データを登録する
-    const createdCafe = await CafeInfo.create({
-        shopName: shopName,
-        priceOfcoffee: priceOfcoffee,
-        location: location,
-        hasWiFi: hasWiFi,
-        wifiStrength: wifiStrength,
-        comfort: comfort,
-        comment: comment,
-        registerDate: dateText
-    });
-    console.log(`${createdCafe.shopName}を登録しました。`)
+    // リクエストボディのうちcafeデータを取得
+    let cafeData = req.body.cafe;
+    // cafeデータに日付のデータを追加
+    cafeData.registerDate = dateText;
+    // リクエストのデータを基にモデルをインスタンス化
+    cafeData = new CafeInfo(cafeData);
+    // データを登録する
+    await cafeData.save();
     // 一覧画面にリダイレクト
     res.redirect("/cafe/index");
 })
