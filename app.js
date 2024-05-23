@@ -5,6 +5,8 @@ const path = require('path');
 const mongoose = require('mongoose');
 // CafeInfoモデルのインポート
 const CafeInfo = require('./models/cafeInfo');
+// methodOverrideのオーバーライド
+var methodOverride = require('method-override');
 
 /// MongoDBへの接続
 // エラー処理
@@ -21,6 +23,8 @@ async function main() {
 
 // formデータをパースする
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+// POSTメソッドをPATCHメソッドでオーバーライドする
+app.use(methodOverride('_method')) // _methodは何でも良いが、formのactionで渡すクエリストリングと同じにすること。
 // ejsのディレクトリの設定
 app.set('views', path.join(__dirname, 'views'));
 // ejsをview エンジンに設定
@@ -70,6 +74,24 @@ app.post('/cafe/register', async (req, res) => {
     await cafeData.save();
     // 一覧画面にリダイレクト
     res.redirect("/cafe/index");
+})
+
+app.get('/cafe/:id/edit', async (req, res) => {
+    // リクエストからidを取得
+    const { id } = req.params;
+    // クリックしたカフェのIDを元にデータを検索
+    const cafe = await CafeInfo.findById(id).exec();
+    // 詳細ページに遷移
+    res.render('cafes/cafeedit', { cafe });
+})
+
+app.put('/cafe/:id/edit', async (req, res) => {
+    // リクエストからidを取得
+    const { id } = req.params;
+    // formデータを基にデータを更新
+    const cafe = await CafeInfo.findByIdAndUpdate(id, { ...req.body.cafe });
+    // 一覧画面にリダイレクト
+    res.redirect(`/cafe/${cafe.id}/edit`);
 })
 
 app.listen(3000, () => {
