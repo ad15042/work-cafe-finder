@@ -32,7 +32,6 @@
             <tbody>
                 <% for (let cafe of cafes) { %>
                     <tr>
-
                         <td>
                             <%= cafe.shopName %>
                         </td>
@@ -40,11 +39,7 @@
                             <%= cafe.location %>
                         </td>
                         <td>
-                            <% if (cafe.hasWiFi){ %>
-                                有
-                                <% } else { %>
-                                    無
-                                    <% } %>
+                            <%= cafe.hasWiFi ? '有' : '無' %>
                         </td>
                         <td>
                             <%= cafe.registerDate %>
@@ -53,25 +48,50 @@
                             <!-- 詳細ボタン -->
                             <button class="btn btn-secondary"
                                 onclick="location.href = '/cafe/<%= cafe.id %>/detail'">詳細</button>
-                            <button class="btn btn-primary"
+                            <!-- 編集ボタン -->
+                            <button class="btn btn-success"
                                 onclick="location.href = '/cafe/<%= cafe.id %>/edit'">編集</button>
+                            <!-- 削除ボタン -->
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal<%= cafe.id %>">削除</button>
+
+                            <!-- 削除用Modal -->
+                            <div class="modal fade" id="deleteModal<%= cafe.id %>" tabindex="-1"
+                                aria-labelledby="exampleModalLabel<%= cafe.id %>" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel<%= cafe.id %>">削除確認画面
+                                            </h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            本当に削除しますか？
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">閉じる</button>
+                                            <button type="button" class="btn btn-primary"
+                                                onclick="location.href = '/cafe/<%= cafe.id %>/delete'">実行</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
-
-
-
                     </tr>
-                    <% }%>
+                    <% } %>
             </tbody>
         </table>
         <!-- 新規登録ボタン -->
-        <button class="btn btn-secondary" onclick="location.href = '/cafe/register'">新規登録</button>
+        <button class="btn btn-primary" onclick="location.href = '/cafe/register'">新規登録</button>
     </div>
 
     <!-- Bootstrap JS (optional) -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

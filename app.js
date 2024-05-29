@@ -88,11 +88,27 @@ app.get('/cafe/:id/edit', async (req, res) => {
 app.put('/cafe/:id/edit', async (req, res) => {
     // リクエストからidを取得
     const { id } = req.params;
-    // formデータを基にデータを更新
-    const cafe = await CafeInfo.findByIdAndUpdate(id, { ...req.body.cafe });
-    // 一覧画面にリダイレクト
+    // formデータを基にデータを更新（スプレッド構文を使って全てのプロパティを取得）
+    const cafe = await CafeInfo.findByIdAndUpdate(id, { ...req.body.cafe }, { new: true });
+    // 削除したデータをログで表示
+    console.log(`${cafe.shopName}のデータを更新しました。`);
+    // 詳細画面にリダイレクト
     res.redirect(`/cafe/${cafe.id}/edit`);
 })
+
+app.get('/cafe/:id/delete', async (req, res) => {
+    // リクエストからidを取得
+    const { id } = req.params;
+    console.log(`${id}`);
+    // idをキーにプロダクトを検索して削除する
+    const cafe = await CafeInfo.findByIdAndDelete(id);
+    // 削除したデータをログで表示
+    console.log(`${cafe.shopName}データを削除しました。`);
+    // 一覧画面にリダイレクト
+    res.redirect("/cafe/index");
+})
+
+
 
 app.listen(3000, () => {
     console.log('****ポート3000で待ち受け中****')
