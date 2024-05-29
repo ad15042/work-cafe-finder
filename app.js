@@ -37,7 +37,6 @@ app.get('/', (req, res) => {
 
 // 一覧ページ
 app.get('/cafe/index', async (req, res) => {
-    console.log('処理ここまで来ている')
     // カフェの一覧を全件選択
     const cafes = await CafeInfo.find({});
     res.render('cafes/cafeindex', { cafes });
@@ -96,10 +95,9 @@ app.put('/cafe/:id/edit', async (req, res) => {
     res.redirect(`/cafe/${cafe.id}/edit`);
 })
 
-app.get('/cafe/:id/delete', async (req, res) => {
+app.delete('/cafe/:id/delete', async (req, res) => {
     // リクエストからidを取得
     const { id } = req.params;
-    console.log(`${id}`);
     // idをキーにプロダクトを検索して削除する
     const cafe = await CafeInfo.findByIdAndDelete(id);
     // 削除したデータをログで表示
