@@ -1,77 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
+<% layout('layouts/boilerplate') -%>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>カフェ編集画面</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* 追加のスタイル */
-        body {
-            padding-top: 3rem;
-        }
-    </style>
-</head>
+    <body>
+        <div class="container">
+            <h1 class="text-center mb-4">登録済み情報の編集</h1>
+            <div class="card">
+                <div class="card-body">
+                    <form action="/cafe/<%= cafe.id %>/edit?_method=PUT" method="POST">
+                        <div class="form-group">
+                            <label for="shopName">カフェの名前</label>
+                            <input type="text" class="form-control" id="shopName" name="cafe[shopName]"
+                                placeholder="カフェの名前を入力してください" value="<%= cafe.shopName %>">
+                        </div>
+                        <div class=" form-group">
+                            <label for="priceOfcoffee">コーヒー一杯の価格</label>
+                            <input type="number" class="form-control" id="priceOfcoffee" name="cafe[priceOfcoffee]"
+                                placeholder="コーヒー一杯の価格を入力してください" value="<%= cafe.priceOfcoffee %>">
+                        </div>
+                        <div class="form-group">
+                            <label for="location">住所</label>
+                            <input type="text" class="form-control" id="location" name="cafe[location]"
+                                placeholder="住所を入力してください" value="<%= cafe.location %>">
+                        </div>
+                        <div class="form-group">
+                            <label for="hasWiFi">WiFiの有無</label>
+                            <select class="form-control" id="hasWiFi" name="cafe[hasWiFi]">
+                                <option value="true" <%=cafe.hasWiFi ? 'selected' : '' %>>あり</option>
+                                <option value="false" <%=!cafe.hasWiFi ? 'selected' : '' %>>なし</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="wifiStrength">WiFiの強度</label>
+                            <input type="range" class="form-control-range" id="wifiStrength" name="cafe[wifiStrength]"
+                                min="1" max="100" value="<%= cafe.wifiStrength %>">
+                        </div>
+                        <div class="form-group">
+                            <label for="comfort">快適さ</label>
+                            <input type="range" class="form-control-range" id="comfort" name="cafe[comfort]" min="1"
+                                max="10" value="<%= cafe.comfort %>">
+                        </div>
+                        <div class="form-group">
+                            <label for="comment">コメント</label>
+                            <textarea class="form-control" id="comment" name="cafe[comment]" rows="3"
+                                placeholder="コメントを入力してください" value="<%= cafe.comment %>"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">更新する</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" onclick="location.href='/cafe/index'">戻る</button>
 
-<body>
-    <div class="container">
-        <h1 class="text-center mb-4">登録済み情報の編集</h1>
-        <div class="card">
-            <div class="card-body">
-                <form action="/cafe/<%= cafe.id %>/edit?_method=PUT" method="POST">
-                    <div class="form-group">
-                        <label for="shopName">カフェの名前</label>
-                        <input type="text" class="form-control" id="shopName" name="cafe[shopName]"
-                            placeholder="カフェの名前を入力してください" value="<%= cafe.shopName %>">
-                    </div>
-                    <div class=" form-group">
-                        <label for="priceOfcoffee">コーヒー一杯の価格</label>
-                        <input type="number" class="form-control" id="priceOfcoffee" name="cafe[priceOfcoffee]"
-                            placeholder="コーヒー一杯の価格を入力してください" value="<%= cafe.priceOfcoffee %>">
-                    </div>
-                    <div class="form-group">
-                        <label for="location">住所</label>
-                        <input type="text" class="form-control" id="location" name="cafe[location]"
-                            placeholder="住所を入力してください" value="<%= cafe.location %>">
-                    </div>
-                    <div class="form-group">
-                        <label for="hasWiFi">WiFiの有無</label>
-                        <select class="form-control" id="hasWiFi" name="cafe[hasWiFi]">
-                            <option value="true" <%=cafe.hasWiFi ? 'selected' : '' %>>あり</option>
-                            <option value="false" <%=!cafe.hasWiFi ? 'selected' : '' %>>なし</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="wifiStrength">WiFiの強度</label>
-                        <input type="range" class="form-control-range" id="wifiStrength" name="cafe[wifiStrength]"
-                            min="1" max="100" value="<%= cafe.wifiStrength %>">
-                    </div>
-                    <div class="form-group">
-                        <label for="comfort">快適さ</label>
-                        <input type="range" class="form-control-range" id="comfort" name="cafe[comfort]" min="1"
-                            max="10" value="<%= cafe.comfort %>">
-                    </div>
-                    <div class="form-group">
-                        <label for="comment">コメント</label>
-                        <textarea class="form-control" id="comment" name="cafe[comment]" rows="3"
-                            placeholder="コメントを入力してください" value="<%= cafe.comment %>"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">更新する</button>
-                </form>
-                <button type="button" class="btn btn-secondary" onclick="location.href='/cafe/index'">戻る</button>
-
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- Bootstrap JS (optional) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-</body>
-
-</html>

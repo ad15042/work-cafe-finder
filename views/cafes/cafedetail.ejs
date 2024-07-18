@@ -1,29 +1,14 @@
-<!DOCTYPE html>
-<html lang="ja">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= cafe.shopName %>の詳細
-    </title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* 追加のスタイル */
-        body {
-            padding-top: 3rem;
-        }
-    </style>
-</head>
-
-<body>
+<% layout('layouts/boilerplate') -%>
 
     <div class="container">
         <h1 class="text-center mb-4">
             <%= cafe.shopName %>の詳細
         </h1>
         <div class="card">
+            <a href="<%= cafe.image %>" target="_blank">
+                <img src="<%= cafe.image %>" class="card-img-top" alt="<%= cafe.shopName %>"
+                    style="max-height: 300px; object-fit: cover;">
+            </a>
             <div class="card-body">
                 <h5 class="card-title">基本情報</h5>
                 <ul class="list-group list-group-flush">
@@ -49,7 +34,6 @@
                         </span>
                         <input type="range" class="form-control-range" id="comfort" min="1" max="10"
                             value="<%= cafe.comfort %>" disabled>
-
                     </li>
                     <li class="list-group-item">コメント: <%= cafe.comment %>
                     </li>
@@ -57,14 +41,31 @@
                     </li>
                 </ul>
             </div>
-            <button type="button" class="btn btn-secondary" onclick="location.href='/cafe/index'">一覧に戻る</button>
+            <div class="card-footer">
+                <button type="button" class="btn btn-secondary" onclick="location.href='/cafe/index'">一覧に戻る</button>
+                <button type="button" class="btn btn-success"
+                    onclick="location.href='/cafe/<%= cafe.id %>/edit'">編集</button>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#deleteModal">削除</button>
+            </div>
+        </div>
+
+        <!-- 削除用Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">削除確認画面</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">本当に削除しますか？</div>
+                    <div class="modal-footer">
+                        <form action="/cafe/<%= cafe.id %>/delete?_method=DELETE" method="POST">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+                            <button class="btn btn-primary">実行</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <!-- Bootstrap JS (optional) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-
-</html>

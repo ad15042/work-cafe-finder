@@ -49,7 +49,10 @@ const CafeInfoSchema = new mongoose.Schema({
     registerDate: {
         type: String,
 
-    }
+    },
+    image: {
+        type: String,
+    },
 })
 
 // モデル作成

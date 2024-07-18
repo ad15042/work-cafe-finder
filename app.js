@@ -3,10 +3,14 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
-// CafeInfoモデルのインポート
+// CafeInfoモデル
 const CafeInfo = require('./models/cafeInfo');
-// methodOverrideのオーバーライド
+// methodOverride
 var methodOverride = require('method-override');
+// morgan
+var morgan = require('morgan')
+// ejs-mate
+const ejsMate = require('ejs-mate');
 
 /// MongoDBへの接続
 // エラー処理
@@ -18,6 +22,7 @@ async function main() {
     console.log('Mongo DBへの接続成功')
 
     // もしデータベースに認証が必要な場合は、ユーザー名とパスワードを含めて接続します
+
     // await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test
 }
 
@@ -25,14 +30,35 @@ async function main() {
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 // POSTメソッドをPATCHメソッドでオーバーライドする
 app.use(methodOverride('_method')) // _methodは何でも良いが、formのactionで渡すクエリストリングと同じにすること。
+
+// デフォルトEJSではなく、EJS-MATEのテンプレートを使うようにエンジンに設定
+app.engine('ejs', ejsMate);
 // ejsのディレクトリの設定
 app.set('views', path.join(__dirname, 'views'));
 // ejsをview エンジンに設定
 app.set('view engine', 'ejs');
+// モルガンを設定
+app.use(morgan('tiny'));
 
+
+const verifyPassword = (req, res, next) => {
+    // リクエストのクエリの中にあるpasswordを分割代入で取得
+    const { password } = req.query;
+    // パスワードがsupersecretが判別
+    if (password === "supersecret") {
+        // nextを返す。（returnがないと以下のres.sendも実行されてしまう。）
+        return next();
+    }
+    res.send('パスワードが違います。')
+}
+
+app.get('/secret', verifyPassword, (req, res) => {
+    res.send('ここは秘密のページです。');
+})
 
 app.get('/', (req, res) => {
     res.render('index');
+    console.log(`リクエストタイム：${req.requestTIme}`);
 })
 
 // 一覧ページ

@@ -27,7 +27,7 @@ async function main() {
 const sampleCafe = ["スターバックス", "タリーズコーヒー", "ドトール", "エクセルシオール", "珈琲館"];
 
 // 生成するカフェ情報の数
-const numberOfCafes = 20;
+const numberOfCafes = 10;
 
 /**
  * シードデータ生成処理
@@ -46,9 +46,9 @@ const seedCafes = async () => {
         const testDate = new Date();
         const testDateText = `${testDate.getFullYear()}年${testDate.getMonth() + 1}月${testDate.getDate()}日`;
 
-
         // 生成したデータの数だけループしてデータを生成する
         for (let i = 0; i <= numberOfCafes; i++) {
+            const imageUrl = await getRandomImage(); // 非同期で画像URLを取得
             testData.push({
                 shopName: `${sampleCafe[Math.floor(Math.random() * 5)]}`, // テスト用カフェ名からランダムに生成
                 priceOfcoffee: Math.floor(Math.random() * 1000) + 300, // 300〜1300円のランダムな価格
@@ -57,7 +57,8 @@ const seedCafes = async () => {
                 wifiStrength: Math.floor(Math.random() * 100), // WiFiの強度を0〜100のランダムな値で設定
                 comfort: Math.floor(Math.random() * 11), // 快適さを0〜10のランダムな値で設定
                 comment: 'テストコメント',
-                registerDate: testDateText
+                registerDate: testDateText,
+                image: imageUrl, // 取得した画像URLを代入
             });
 
         }
@@ -82,6 +83,50 @@ const getRandomWard = () => {
         .map(x => x.name) // フィルタリングされたオブジェクトのnameフィールドのみを取り出す
     [0] ?? null; // 取り出したnameの配列から最初の要素を取得、もし配列が空ならばnullを返す
     return wardName
+}
+
+
+/**
+ * ランダムな画像取得処理
+ * 高画質な画像を配布しているUnsplashが提供しているUnsplash APIを使用して
+ * シードデータ用のいい感じのカフェの画像データをランダムに取得する
+ * Fetch APIを使用して指定のURLにリクエストを投げ、レスポンスから画像情報を取得
+ * @returns Unsplashから取得した画像データのURL
+ */
+const getRandomImage = async () => {
+    // 検索キーワード
+    const query = "cafe-interior";
+    // アクセスキー
+    const accessKey = "hzeNEyqqUWMTlhgJbhLCOluqHtzaAG8932YC9DkEUGQ";
+    // 画像データの取得数
+    const count = 1;
+    // リクエスト用URL
+    url = `https://api.unsplash.com/photos/random?query=${query}`;
+    try {
+        // Fetch APIを使用
+        const res = await fetch(url, {
+            // APIキーはAuthorizationヘッダーに含めて送信
+            headers: {
+                Authorization: `Client-ID ${accessKey}`
+            }
+        })
+
+        // レスポンスが異常の場合はエラーをスロー
+        if (!res.ok) {
+            throw new Error('Network response was not ok ' + res.statusText);
+        }
+
+        // レスポンスをJSON形式でパースし、画像のURLを取得
+        const data = await res.json();
+        // レスポンスから画像のURLを取得
+        const imageUrl = data.urls.regular;
+        console.log(imageUrl);
+
+        return imageUrl;
+
+    } catch (error) {
+        console.error('Fetch error:', error);
+    }
 }
 
 // seedCafes関数を呼び出してデータを追加

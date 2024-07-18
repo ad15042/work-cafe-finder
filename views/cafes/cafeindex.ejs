@@ -1,101 +1,59 @@
-<!DOCTYPE html>
-<html lang="ja">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>カフェ一覧画面</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* 追加のスタイル */
-        body {
-            padding-top: 3rem;
-        }
-    </style>
-</head>
-
-<body>
+<% layout('layouts/boilerplate') -%>
     <div class="container">
         <h1 class="text-center mb-4">カフェ一覧</h1>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>店名</th>
-                    <th>住所</th>
-                    <th>WiFiの有無</th>
-                    <th>登録日</th>
-                    <th> </th>
-                </tr>
-            </thead>
-            <tbody>
-                <% for (let cafe of cafes) { %>
-                    <tr>
-                        <td>
-                            <%= cafe.shopName %>
-                        </td>
-                        <td>
-                            <%= cafe.location %>
-                        </td>
-                        <td>
-                            <%= cafe.hasWiFi ? '有' : '無' %>
-                        </td>
-                        <td>
-                            <%= cafe.registerDate %>
-                        </td>
-                        <td>
-                            <!-- 詳細ボタン -->
+        <div class="row">
+            <% for (let cafe of cafes) { %>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="<%= cafe.image %>" class="card-img-top" alt="<%= cafe.shopName %>"
+                            style="object-fit: cover; height: 300px; width: 300px;">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <%= cafe.shopName %>
+                            </h5>
+                            <p class="card-text"><strong>住所:</strong>
+                                <%= cafe.location %>
+                            </p>
+                            <p class="card-text"><strong>WiFiの有無:</strong>
+                                <%= cafe.hasWiFi ? '有' : '無' %>
+                            </p>
+                            <p class="card-text"><strong>登録日:</strong>
+                                <%= cafe.registerDate %>
+                            </p>
                             <button class="btn btn-secondary"
                                 onclick="location.href = '/cafe/<%= cafe.id %>/detail'">詳細</button>
-                            <!-- 編集ボタン -->
                             <button class="btn btn-success"
                                 onclick="location.href = '/cafe/<%= cafe.id %>/edit'">編集</button>
-                            <!-- 削除ボタン -->
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                 data-bs-target="#deleteModal<%= cafe.id %>">削除</button>
+                        </div>
+                    </div>
+                </div>
 
-                            <!-- 削除用Modal -->
-                            <div class="modal fade" id="deleteModal<%= cafe.id %>" tabindex="-1"
-                                aria-labelledby="exampleModalLabel<%= cafe.id %>" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="exampleModalLabel<%= cafe.id %>">削除確認画面
-                                            </h1>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            本当に削除しますか？
-                                        </div>
-                                        <div class="modal-footer">
-                                            <form action="/cafe/<%= cafe.id %>/delete?_method=DELETE" method="POST"'>
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">閉じる</button>
-                                                <button class="btn btn-primary">実行</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+                <!-- 削除用Modal -->
+                <div class="modal fade" id="deleteModal<%= cafe.id %>" tabindex="-1"
+                    aria-labelledby="exampleModalLabel<%= cafe.id %>" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel<%= cafe.id %>">削除確認画面</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
-                        </td>
-                    </tr>
-                    <% } %>
-            </tbody>
-        </table>
+                            <div class="modal-body">
+                                本当に削除しますか？
+                            </div>
+                            <div class="modal-footer">
+                                <form action="/cafe/<%= cafe.id %>/delete?_method=DELETE" method="POST">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+                                    <button class="btn btn-primary">実行</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+        </div>
         <!-- 新規登録ボタン -->
-        <button class="btn btn-primary" onclick="location.href = ' /cafe/register'">新規登録</button>
-                                        </div>
-
-                                        <!-- Bootstrap JS (optional) -->
-                                        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-                                        <script
-                                            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-                                        <script
-                                            src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-                                        <script
-                                            src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-</html>
+        <button class="btn btn-primary" onclick="location.href = '/cafe/register'">新規登録</button>
+    </div>
