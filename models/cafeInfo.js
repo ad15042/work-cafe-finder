@@ -10,6 +10,7 @@
 */
 
 const mongoose = require('mongoose');
+const Review = require('./review');
 
 const CafeInfoSchema = new mongoose.Schema({
     shopName: {
@@ -53,6 +54,25 @@ const CafeInfoSchema = new mongoose.Schema({
     image: {
         type: String,
     },
+    reviews: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Review',
+        }
+    ]
+})
+
+/** cafe削除時にreviewも削除するミドルウェア */
+CafeInfoSchema.post('findOneAndDelete', async function (doc) {
+    //　削除対象カフェデータがあるか判別
+    if (doc) {
+        await Review.deleteMany({
+            _id: {
+                // docのreview配列内に_idが含まれていたら全て削除する
+                $in: doc.reviews
+            }
+        })
+    }
 })
 
 // モデル作成

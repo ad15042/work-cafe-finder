@@ -1,7 +1,7 @@
 // joi
 const Joi = require('joi');
 
-// スキーマを定義
+// cafeスキーマを定義
 module.exports.cafeSchema = Joi.object({
     cafeData: Joi.object({ // リクエストボディにcafeDataがあることを定義
         //　cafeDataの中身がどういう値かをobjectの中に定義する
@@ -16,3 +16,20 @@ module.exports.cafeSchema = Joi.object({
         image: Joi.string(), // String
     }).required() // リクエストボディのcafeDataは必須項目であることを定義
 });
+
+
+// reviewスキーマを定義
+// リクエストは以下のようなデータ形式で送信される
+// review:[
+//     body:String,
+//     rating:Number
+// ]
+module.exports.reviewSchema = Joi.object({
+    review: Joi.object({
+        body: Joi.string().required(),
+        rating: Joi.number().required()
+    }).required()
+});
+
+
+
