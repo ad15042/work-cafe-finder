@@ -5,6 +5,8 @@ const path = require('path');
 const mongoose = require('mongoose');
 // CafeInfoモデル
 const CafeInfo = require('./models/cafeInfo');
+// Reviewモデル
+const Review = require('./models/review');
 // methodOverride
 var methodOverride = require('method-override');
 // morgan
@@ -16,7 +18,7 @@ const catchAsync = require('./utils/catchAsync');
 // 独自のエラークラス
 const ExpressError = require('./utils/ExpressError');
 // Joiで定義したスキーマ
-const { cafeSchema } = require('./schema');
+const { cafeSchema, reviewSchema } = require('./schema');
 
 /// MongoDBへの接続
 // エラー処理
@@ -46,7 +48,7 @@ app.set('view engine', 'ejs');
 // モルガンを設定
 app.use(morgan('tiny'));
 
-// エラーハンドリング用ミドルウェア関数
+// エラーハンドリング用ミドルウェア関数（cafeデータ用）
 const validateCafe = (req, res, next) => {
     // リクエストボディに対してスキーマで定義されたバリデートを適用する
     const { error } = cafeSchema.validate(req.body);
@@ -63,36 +65,53 @@ const validateCafe = (req, res, next) => {
     }
 }
 
+// エラーハンドリング用ミドルウェア関数（reviewデータ用）
+const validateReview = (req, res, next) => {
+    // リクエストボディに対してスキーマで定義されたバリデートを適用する
+    const { error } = reviewSchema.validate(req.body);
+    if (error) {
+        // detailsオブジェクトからmapでmessageを取得
+        msg = error.details.map(obj => obj.message).join('.');  // joinする事で配列をStringに変換
+        console.log(`message内容${msg}`);
+        // エラーをスローする
+        throw new ExpressError(msg, 400);
+    } else {
+        // エラーがない場合は次の処理に遷移
+        next();
+    }
+}
 
 
+
+/** トップページ */
 app.get('/', (req, res) => {
     res.render('index');
     console.log(`リクエストタイム：${req.requestTIme}`);
 })
 
-// 一覧ページ
+/** 一覧ページ */
 app.get('/cafe/index', async (req, res) => {
     // カフェの一覧を全件選択
     const cafes = await CafeInfo.find({});
     res.render('cafes/cafeindex', { cafes });
 })
 
-// 詳細ページ
+/** 詳細ページ */
 app.get('/cafe/:id/detail', catchAsync(async (req, res) => { // catchAsyncでラップ
     // リクエストからidを取得
     const { id } = req.params;
     // クリックしたカフェのIDを元にデータを検索
-    const cafe = await CafeInfo.findById(id).exec();
+    const cafe = await CafeInfo.findById(id).populate('reviews').exec(); // 追加
     // 詳細ページに遷移
     res.render('cafes/cafedetail', { cafe });
 }))
 
-// 登録ページへ遷移
+/** 登録ページへ遷移 */
 app.get('/cafe/register', async (req, res) => {
     res.render('cafes/caferegister');
 })
 
-// 新規登録処理のルーティング
+/** 新規登録処理のルーティング */
 app.post('/cafe/register', validateCafe, catchAsync(async (req, res) => { // catchAsyncでWrapする
     // 登録日用日付データを作成
     const date = new Date();
@@ -112,6 +131,7 @@ app.post('/cafe/register', validateCafe, catchAsync(async (req, res) => { // cat
     res.redirect("/cafe/index");
 }))
 
+/** 編集ページ */
 app.get('/cafe/:id/edit', async (req, res) => {
     // リクエストからidを取得
     const { id } = req.params;
@@ -121,6 +141,7 @@ app.get('/cafe/:id/edit', async (req, res) => {
     res.render('cafes/cafeedit', { cafe });
 })
 
+/** カフェ更新処理のルーティング */
 app.put('/cafe/:id/edit', validateCafe, catchAsync(async (req, res) => {
     // リクエストからidを取得
     const { id } = req.params;
@@ -132,6 +153,7 @@ app.put('/cafe/:id/edit', validateCafe, catchAsync(async (req, res) => {
     res.redirect(`/cafe/${cafe.id}/edit`);
 }))
 
+/** カフェの削除処理のルーティング */
 app.delete('/cafe/:id/delete', async (req, res) => {
     // リクエストからidを取得
     const { id } = req.params;
@@ -142,6 +164,32 @@ app.delete('/cafe/:id/delete', async (req, res) => {
     // 一覧画面にリダイレクト
     res.redirect("/cafe/index");
 })
+
+/** レビュー登録処理のルーティング */
+app.post('/cafe/:id/reviews', validateReview, catchAsync(async (req, res) => {
+    // レビュー対象のカフェ取得
+    const cafe = await CafeInfo.findById(req.params.id);
+    //　登録するレビューをもとにモデルのインスタンス生成
+    const review = new Review(req.body.review);
+    // レビューをカフェにpush
+    cafe.reviews.push(review);
+    //　各モデルの登録処理
+    await cafe.save();
+    await review.save();
+    // カフェの詳細ページにリダイレクト
+    res.redirect(`/cafe/${cafe._id}/detail`)
+}))
+
+/** レビューの削除処理のルーティング */
+app.delete('/cafe/:id/reviews/:reviewId', catchAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    // レビューの削除
+    await Review.findByIdAndDelete(reviewId);
+    // カフェのreviews配列から該当のレビューIDを削除
+    await CafeInfo.findByIdAndUpdate(id, { $pull: { reviews: reviewId } }) // カフェモデルを削除するわけではないからアップデートになる
+    // 削除後、カフェの詳細ページにリダイレクト
+    res.redirect(`/cafe/${id}/detail`)
+}))
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('ページが見つかりませんでした。', 404));

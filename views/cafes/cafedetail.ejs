@@ -1,56 +1,132 @@
 <% layout('layouts/boilerplate') -%>
 
     <div class="container">
-        <h1 class="text-center mb-4">
-            <%= cafe.shopName %>の詳細
-        </h1>
-        <div class="card">
-            <a href="<%= cafe.image %>" target="_blank">
-                <img src="<%= cafe.image %>" class="card-img-top" alt="<%= cafe.shopName %>"
-                    style="max-height: 300px; object-fit: cover;">
-            </a>
-            <div class="card-body">
-                <h5 class="card-title">基本情報</h5>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">カフェの名前: <%= cafe.shopName %>
-                    </li>
-                    <li class="list-group-item">コーヒー一杯の価格: <%= cafe.priceOfcoffee %> 円</li>
-                    <li class="list-group-item">住所: <%= cafe.location %>
-                    </li>
-                    <li class="list-group-item">WiFiの有無: <%= cafe.hasWiFi ? 'あり' : 'なし' %>
-                    </li>
-                    <li class="list-group-item">
-                        WiFiの強度:
-                        <span id="wifiStrengthValue">
-                            <%= cafe.wifiStrength %>
-                        </span>
-                        <input type="range" class="form-control-range" id="wifiStrength" min="0" max="100"
-                            value="<%= cafe.wifiStrength %>" disabled>
-                    </li>
-                    <li class="list-group-item">
-                        快適さ:
-                        <span id="comfortValue">
-                            <%= cafe.comfort %>
-                        </span>
-                        <input type="range" class="form-control-range" id="comfort" min="1" max="10"
-                            value="<%= cafe.comfort %>" disabled>
-                    </li>
-                    <li class="list-group-item">コメント: <%= cafe.comment %>
-                    </li>
-                    <li class="list-group-item">登録日: <%= cafe.registerDate %>
-                    </li>
-                </ul>
+        <div class="row">
+            <!-- 左側: カフェ情報 -->
+            <div class="col-md-6">
+                <h1 class="text-center mb-4">
+                    <%= cafe.shopName %>の詳細
+                </h1>
+                <div class="card mb-4">
+                    <a href="<%= cafe.image %>" target="_blank">
+                        <img src="<%= cafe.image %>" class="card-img-top" alt="<%= cafe.shopName %>"
+                            style="max-height: 300px; object-fit: cover;">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">基本情報</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">カフェの名前: <%= cafe.shopName %>
+                            </li>
+                            <li class="list-group-item">コーヒー一杯の価格: <%= cafe.priceOfcoffee %> 円</li>
+                            <li class="list-group-item">住所: <%= cafe.location %>
+                            </li>
+                            <li class="list-group-item">WiFiの有無: <%= cafe.hasWiFi ? 'あり' : 'なし' %>
+                            </li>
+                            <li class="list-group-item">
+                                WiFiの強度:
+                                <span id="wifiStrengthValue">
+                                    <%= cafe.wifiStrength %>
+                                </span>
+                                <input type="range" class="form-control-range" id="wifiStrength" min="0" max="100"
+                                    value="<%= cafe.wifiStrength %>" disabled>
+                            </li>
+                            <li class="list-group-item">
+                                快適さ:
+                                <span id="comfortValue">
+                                    <%= cafe.comfort %>
+                                </span>
+                                <input type="range" class="form-control-range" id="comfort" min="1" max="10"
+                                    value="<%= cafe.comfort %>" disabled>
+                            </li>
+                            <li class="list-group-item">コメント: <%= cafe.comment %>
+                            </li>
+                            <li class="list-group-item">登録日: <%= cafe.registerDate %>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-secondary"
+                            onclick="location.href='/cafe/index'">一覧に戻る</button>
+                        <button type="button" class="btn btn-success"
+                            onclick="location.href='/cafe/<%= cafe.id %>/edit'">編集</button>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal">削除</button>
+                    </div>
+                </div>
             </div>
-            <div class="card-footer">
-                <button type="button" class="btn btn-secondary" onclick="location.href='/cafe/index'">一覧に戻る</button>
-                <button type="button" class="btn btn-success"
-                    onclick="location.href='/cafe/<%= cafe.id %>/edit'">編集</button>
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                    data-bs-target="#deleteModal">削除</button>
+
+            <!-- 右側: レビュー情報 -->
+            <div class="col-md-6">
+                <h3 class="mb-3">レビュー一覧</h3>
+                <% if (cafe.reviews && cafe.reviews.length> 0) { %>
+                    <ul class="list-group mb-4">
+                        <% for (let review of cafe.reviews) { %>
+                            <li class="list-group-item">
+                                <strong>評価:</strong>
+                                <%= review.rating %>/5
+                                    <br>
+                                    <strong>レビュー内容:</strong>
+                                    <%= review.body %>
+                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                            data-bs-target="#deleteReviewModal">削除</button>
+                            </li>
+                            <!-- レビュー削除用Modal -->
+                            <div class="modal fade" id="deleteReviewModal" tabindex="-1"
+                                aria-labelledby="deleteReviewModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteReviewModalLabel">削除確認画面</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">本当に削除しますか？</div>
+                                        <div class="modal-footer">
+                                            <form
+                                                action="/cafe/<%= cafe._id %>/reviews/<%= review._id %>?_method=DELETE"
+                                                method="POST">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">閉じる</button>
+                                                <button class="btn btn-primary">実行</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <% } %>
+                    </ul>
+                    <% } else { %>
+                        <p>まだレビューがありません。</p>
+                        <% } %>
+
+                            <!-- レビュー登録フォーム -->
+                            <div class="mt-5">
+                                <h3>レビューを追加する</h3>
+                                <form action="/cafe/<%= cafe._id %>/reviews" method="POST">
+                                    <div class="form-group">
+                                        <label for="rating">評価:</label>
+                                        <select name="review[rating]" id="rating" class="form-select">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="body">レビュー内容:</label>
+                                        <textarea name="review[body]" id="body" class="form-control" rows="4"
+                                            required></textarea>
+                                    </div>
+                                    <div class="mt-3">
+                                        <button type="submit" class="btn btn-success">レビューを送信する</button>
+                                    </div>
+                                </form>
+                            </div>
             </div>
         </div>
 
-        <!-- 削除用Modal -->
+        <!-- カフェ削除用Modal -->
         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -68,4 +144,5 @@
                 </div>
             </div>
         </div>
+
     </div>
