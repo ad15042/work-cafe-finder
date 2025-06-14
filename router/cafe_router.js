@@ -20,7 +20,6 @@ const validateCafe = (req, res, next) => {
 }
 
 
-
 /** 一覧ページ */
 router.get('/index', async (req, res) => {
     // カフェの一覧を全件選択
@@ -34,6 +33,10 @@ router.get('/:id/detail', catchAsync(async (req, res) => { // catchAsyncでラ�
     const { id } = req.params;
     // クリックしたカフェのIDを元にデータを検索
     const cafe = await CafeInfo.findById(id).populate('reviews').exec(); // 追加
+    if (!cafe) {
+        req.flash('error', '指定されたカフェは存在しません。');
+        return res.redirect('/cafe/index'); // カフェが存在しない場合は一覧ページにリダイレクト
+    }
     // 詳細ページに遷移
     res.render('../views/cafes/cafedetail', { cafe });
 }))
@@ -57,6 +60,8 @@ router.post('/register', validateCafe, catchAsync(async (req, res) => { // catch
     cafeData = new CafeInfo(cafeData);
     // データを登録する
     await cafeData.save();
+    // フラッシュメッセージを設定
+    req.flash('success', `${cafeData.shopName}のデータを登録しました。`);
     // 一覧画面にリダイレクト
     res.redirect("/cafe/index");
 }))
@@ -67,7 +72,11 @@ router.get('/:id/edit', async (req, res) => {
     const { id } = req.params;
     // クリックしたカフェのIDを元にデータを検索
     const cafe = await CafeInfo.findById(id).exec();
-    // 詳細ページに遷移
+    if (!cafe) {
+        req.flash('error', '指定されたカフェは存在しません。');
+        return res.redirect('/cafe/index'); // カフェが存在しない場合は一覧ページにリダイレクト
+    }
+    // カフェのデータを取得できた場合、編集ページに遷移
     res.render('../views/cafes/cafeedit', { cafe });
 })
 
@@ -79,6 +88,8 @@ router.put('/:id/edit', validateCafe, catchAsync(async (req, res) => {
     const cafe = await CafeInfo.findByIdAndUpdate(id, { ...req.body.cafe }, { new: true });
     // 削除したデータをログで表示
     console.log(`${cafe.shopName}のデータを更新しました。`);
+    // フラッシュメッセージを設定
+    req.flash('success', `${cafe.shopName}のデータを更新しました。`);
     // 詳細画面にリダイレクト
     res.redirect(`/cafe/${cafe.id}/edit`);
 }))
@@ -91,6 +102,8 @@ router.delete('/:id/delete', async (req, res) => {
     const cafe = await CafeInfo.findByIdAndDelete(id);
     // 削除したデータをログで表示
     console.log(`${cafe.shopName}データを削除しました。`);
+    // フラッシュメッセージを設定
+    req.flash('success', `${cafe.shopName}のデータを削除しました。`);
     // 一覧画面にリダイレクト
     res.redirect("/cafe/index");
 })

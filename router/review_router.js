@@ -1,10 +1,11 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true }); // mergeParamsをtrueにすることで、ネストされたルーティングでparamsを共有できるようにする
 const { reviewSchema } = require('../schema');  // reviewSchemaはJoiで定義されたバリデーションスキーマ
 const ExpressError = require('../utils/ExpressError');  // ExpressErrorはカスタムエラーハンドリング用
 const catchAsync = require('../utils/catchAsync');  // catchAsyncは非同期処理のエラーハンドリング用
 const CafeInfo = require('../models/cafeInfo');  // CafeInfoはカフェ情報のモデル
 const Review = require('../models/review');
+const { merge } = require('./cafe_router');
 const validateReview = (req, res, next) => {
     // リクエストボディに対してスキーマで定義されたバリデートを適用する
     const { error } = reviewSchema.validate(req.body);
@@ -18,7 +19,7 @@ const validateReview = (req, res, next) => {
 }
 
 /** レビュー登録処理のルーティング */
-router.post('/:id/reviews', validateReview, catchAsync(async (req, res) => {
+router.post('/', validateReview, catchAsync(async (req, res) => {
     // レビュー対象のカフェ取得
     const cafe = await CafeInfo.findById(req.params.id);
     //　登録するレビューをもとにモデルのインスタンス生成
@@ -33,7 +34,7 @@ router.post('/:id/reviews', validateReview, catchAsync(async (req, res) => {
 }))
 
 /** レビューの削除処理のルーティング */
-router.delete('/:id/reviews/:reviewId', catchAsync(async (req, res) => {
+router.delete('/:reviewId', catchAsync(async (req, res) => {
     const { id, reviewId } = req.params;
     // レビューの削除
     await Review.findByIdAndDelete(reviewId);
