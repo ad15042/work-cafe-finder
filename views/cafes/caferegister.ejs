@@ -4,38 +4,45 @@
         <h1 class="text-center mb-4">新規カフェ登録</h1>
         <div class="card">
             <div class="card-body">
-                <form action="/cafe/register" method="POST">
+                <form action="/cafe/register" class="needs-validation" method="POST" novalidate>
                     <div class="form-group">
                         <label for="shopName">カフェの名前</label>
                         <input type="text" class="form-control" id="shopName" name="cafe[shopName]"
-                            placeholder="カフェの名前を入力してください">
+                            placeholder="カフェの名前を入力してください" required>
+                        <div class="invalid-feedback">カフェの名前を入力してください。</div>
                     </div>
                     <div class="form-group">
                         <label for="priceOfcoffee">コーヒー一杯の価格</label>
                         <input type="number" class="form-control" id="priceOfcoffee" name="cafe[priceOfcoffee]"
-                            placeholder="コーヒー一杯の価格を入力してください">
+                            placeholder="コーヒー一杯の価格を入力してください" required>
+                        <div class="invalid-feedback">コーヒー一杯の価格を入力してください。</div>
                     </div>
                     <div class="form-group">
                         <label for="location">住所</label>
                         <input type="text" class="form-control" id="location" name="cafe[location]"
-                            placeholder="住所を入力してください">
+                            placeholder="住所を入力してください" required>
+                        <div class="invalid-feedback">住所を入力してください。</div>
                     </div>
                     <div class="form-group">
                         <label for="hasWiFi">WiFiの有無</label>
-                        <select class="form-control" id="hasWiFi" name="cafe[hasWiFi]">
+                        <select class="form-control" id="hasWiFi" name="cafe[hasWiFi]" required>
+                            <option value="">選択してください</option>
                             <option value="true">あり</option>
                             <option value="false">なし</option>
                         </select>
+                        <div class="invalid-feedback">WiFiの有無を選択してください。</div>
                     </div>
                     <div class="form-group">
                         <label for="wifiStrength">WiFiの強度</label>
                         <input type="range" class="form-control-range" id="wifiStrength" name="cafe[wifiStrength]"
-                            min="1" max="100">
+                            min="1" max="100" required>
+                        <div class="invalid-feedback">WiFiの強度を設定してください。</div>
                     </div>
                     <div class="form-group">
                         <label for="confort">快適さ</label>
                         <input type="range" class="form-control-range" id="confort" name="cafe[confort]" min="1"
-                            max="10">
+                            max="10" required>
+                        <div class="invalid-feedback">快適さを設定してください。</div>
                     </div>
                     <div class="form-group">
                         <label for="comment">コメント</label>
@@ -50,7 +57,6 @@
                     <button type="submit" class="btn btn-primary">登録する</button>
                 </form>
                 <button type="button" class="btn btn-secondary" onclick="location.href='/cafe/index'">戻る</button>
-
             </div>
         </div>
     </div>
